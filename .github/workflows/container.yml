@@ -57,6 +57,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.licenses=MIT AND GPL-3.0-only
           tags: |
             type=edge,branch=main
             type=semver,pattern={{version}}
