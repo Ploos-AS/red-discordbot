@@ -2,7 +2,12 @@
 set -Eeuo pipefail
 image=${IMAGE:-red-discordbot:local}
 tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
+cleanup() {
+    docker run --rm --user 0 -v "$tmp:/cleanup" --entrypoint sh "$image" \
+        -c 'find /cleanup -mindepth 1 -delete' >/dev/null 2>&1 || true
+    rmdir "$tmp" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
 chmod 0777 "$tmp"
 mkdir "$tmp/bin"
 cat > "$tmp/bin/redbot" <<'EOF'

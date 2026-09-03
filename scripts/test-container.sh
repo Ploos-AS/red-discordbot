@@ -3,7 +3,13 @@ set -Eeuo pipefail
 image=${IMAGE:-red-discordbot:local}
 secret='M0-dummy-token-never-connect'
 tmp=$(mktemp -d)
-trap 'docker rm -f red-m0-test >/dev/null 2>&1 || true; rm -rf "$tmp"' EXIT
+cleanup() {
+  docker rm -f red-m0-test >/dev/null 2>&1 || true
+  docker run --rm --user 0 -v "$tmp:/cleanup" --entrypoint sh "$image" \
+    -c 'find /cleanup -mindepth 1 -delete' >/dev/null 2>&1 || true
+  rmdir "$tmp" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
 chmod 0777 "$tmp"
 printf '%s\n' "$secret" > "$tmp/token"
 chmod 0644 "$tmp/token"
