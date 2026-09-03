@@ -1,0 +1,40 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+if (( $# )); then exec "$@"; fi
+instance=${INSTANCE_NAME:-docker}
+prefix=${PREFIX:-!}
+[[ -n "$prefix" ]] || { echo "error: PREFIX must not be empty" >&2; exit 64; }
+red-bootstrap
+
+token=""
+if [[ -n "${TOKEN_FILE:-}" ]]; then
+    [[ -r "$TOKEN_FILE" ]] || { echo "error: TOKEN_FILE is not readable" >&2; exit 66; }
+    IFS= read -r token < "$TOKEN_FILE" || true
+    [[ -n "$token" ]] || { echo "error: TOKEN_FILE is empty" >&2; exit 65; }
+elif [[ -n "${TOKEN:-}" ]]; then
+    token=$TOKEN
+fi
+[[ -n "$token" ]] || { echo "error: set TOKEN_FILE (preferred) or TOKEN" >&2; exit 64; }
+
+extra=()
+if [[ -n "${EXTRA_ARGS:-}" ]]; then
+    args_file=$(mktemp)
+    trap 'rm -f "$args_file"' EXIT
+    if ! python -c 'import os,shlex,sys
+try:
+    args = shlex.split(os.environ.get("EXTRA_ARGS", ""))
+except ValueError as error:
+    print(f"error: invalid EXTRA_ARGS quoting: {error}", file=sys.stderr)
+    raise SystemExit(64)
+for arg in args:
+    sys.stdout.buffer.write(arg.encode() + b"\0")' > "$args_file"; then
+        exit 64
+    fi
+    mapfile -d '' -t extra < "$args_file"
+    rm -f "$args_file"
+    trap - EXIT
+fi
+echo "Starting Red instance '$instance' with prefix configured; token source: $([[ -n "${TOKEN_FILE:-}" ]] && echo file || echo environment)."
+printf '%s\n' "$$" > /tmp/redbot.pid
+exec redbot "$instance" --no-prompt --token "$token" --prefix "$prefix" "${extra[@]}"

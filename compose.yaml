@@ -1,0 +1,30 @@
+services:
+  red-discordbot:
+    image: ghcr.io/ploos-as/red-discordbot:latest
+    build: .
+    environment:
+      INSTANCE_NAME: ${INSTANCE_NAME:-docker}
+      PREFIX: ${PREFIX:-!}
+      STORAGE_TYPE: ${STORAGE_TYPE:-JSON}
+      TOKEN_FILE: /run/secrets/discord_token
+      EXTRA_ARGS: ${EXTRA_ARGS:-}
+    secrets:
+      - discord_token
+    volumes:
+      - red-data:/data
+    healthcheck:
+      test: ["CMD", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+secrets:
+  discord_token:
+    file: ${TOKEN_FILE_HOST:-./secrets/discord_token}
+volumes:
+  red-data:

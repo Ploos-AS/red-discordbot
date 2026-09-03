@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+[ -r /tmp/redbot.pid ] || { echo "startup PID absent" >&2; exit 1; }
+[ -r "/data/.config/Red-DiscordBot/config.json" ] || { echo "instance configuration absent" >&2; exit 1; }
+pid=$(cat /tmp/redbot.pid)
+case "$pid" in ''|*[!0-9]*) echo "startup PID invalid" >&2; exit 1;; esac
+kill -0 "$pid" 2>/dev/null || { echo "Red process absent" >&2; exit 1; }
+[ -r "/proc/$pid/cmdline" ] || { echo "Red process metadata absent" >&2; exit 1; }
+tr '\000' ' ' < "/proc/$pid/cmdline" | grep -Eq '(^|/| )[r]edbot( |$)' || {
+    echo "startup PID is not Red" >&2
+    exit 1
+}

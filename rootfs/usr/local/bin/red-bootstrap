@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+instance=${INSTANCE_NAME:-docker}
+storage=$(printf '%s' "${STORAGE_TYPE:-JSON}" | tr '[:upper:]' '[:lower:]')
+case "$instance" in ''|*[!A-Za-z0-9_-]*) echo "error: INSTANCE_NAME must contain only letters, digits, _ or -" >&2; exit 64;; esac
+case "$storage" in json) ;; *) echo "error: STORAGE_TYPE '$storage' is unsupported in M0 (use JSON)" >&2; exit 64;; esac
+mkdir -p /data/redbot /data/.config /data/.local/share
+config=/data/.config/Red-DiscordBot/config.json
+if [ -f "$config" ]; then
+    status=0
+    python -c 'import json,sys; raise SystemExit(0 if sys.argv[2] in json.load(open(sys.argv[1], encoding="utf-8")) else 1)' "$config" "$instance" || status=$?
+    case "$status" in
+        0) echo "Bootstrap: reusing instance '$instance'."; exit 0 ;;
+        1) ;;
+        *) echo "error: existing Red instance configuration is invalid" >&2; exit 65 ;;
+    esac
+fi
+echo "Bootstrap: creating JSON instance '$instance'."
+redbot-setup --no-prompt --instance-name "$instance" --data-path /data/redbot --backend json

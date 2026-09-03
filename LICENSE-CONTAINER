@@ -1,0 +1,6 @@
+The original container and distribution code in this repository is licensed
+under the MIT License. See LICENSE. MIT is GPL-compatible.
+
+Red-DiscordBot is a separate upstream work licensed under GPL-3.0. Other base
+image and operating-system components remain under their respective licenses.
+No ownership of Red-DiscordBot is claimed by Ploos AS.
