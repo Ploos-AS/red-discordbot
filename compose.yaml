@@ -1,7 +1,6 @@
 services:
   red-discordbot:
-    image: ghcr.io/ploos-as/red-discordbot:latest
-    build: .
+    image: ghcr.io/ploos-as/red-discordbot:0.1.0
     environment:
       INSTANCE_NAME: ${INSTANCE_NAME:-docker}
       PREFIX: ${PREFIX:-!}
