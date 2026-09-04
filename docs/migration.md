@@ -9,5 +9,8 @@ Paths used by other images, including PhasecoreX variants, have not been verifie
 as directly compatible. Do not mount an entire old application directory over
 `/data` blindly. Prefer Red's own backup/restore facilities or copy a confirmed
 Red data directory into a disposable volume, then inspect and test it with the
-same upstream Red version. PostgreSQL migrations are outside M0. Keep the source
-backup unchanged until commands, cogs, and data have been verified.
+same upstream Red version. Never copy a source container's Python environment or
+application installation into `/data`; make copied state writable by UID/GID
+1000 and validate with `edge` or the intended stable tag. PostgreSQL migrations
+are outside v0.1.0. Keep the source backup unchanged until commands, cogs, and
+data have been verified.

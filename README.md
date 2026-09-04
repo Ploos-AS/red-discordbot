@@ -1,4 +1,4 @@
-# Red-DiscordBot container
+# Ploos-AS/red-discordbot
 
 A production-oriented, self-hosted OCI distribution of upstream
 [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot). Red is installed
@@ -22,8 +22,10 @@ docker run -d --name red-discordbot --restart unless-stopped \
   ghcr.io/ploos-as/red-discordbot:0.1.0
 ```
 
-For Compose, create `secrets/discord_token`, then run `docker compose up -d`. No ports are needed. `TOKEN_FILE` takes precedence over
-`TOKEN` and its contents are never intentionally logged.
+For Compose, create `secrets/discord_token`, then run `docker compose up -d`.
+The checked-in Compose baseline uses the stable `0.1.0` image, a named volume,
+`no-new-privileges`, and dropped capabilities. No ports are needed. `TOKEN_FILE`
+takes precedence over `TOKEN` and its contents are never intentionally logged.
 
 ## Persistence and upgrades
 
@@ -47,8 +49,9 @@ by `systemctl --user start red-discordbot.service`. Ensure
 
 See [configuration](docs/configuration.md), [architecture](docs/architecture.md),
 and [migration guidance](docs/migration.md). The healthcheck is local liveness,
-not proof of Discord connectivity. No privileged mode, host networking, extra
-capabilities, or bundled third-party cogs are used.
+not proof of Discord connectivity. `tini` forwards SIGTERM for graceful shutdown.
+No privileged mode, host networking, extra capabilities, or bundled third-party
+cogs are used.
 
 ## Licensing
 

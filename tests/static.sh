@@ -32,7 +32,7 @@ grep -Fq 'provenance: mode=max' .github/workflows/container.yml
 grep -Fq 'sbom: true' .github/workflows/container.yml
 grep -Fq 'gh release create' .github/workflows/container.yml
 grep -Fq 'type=raw,value=latest' .github/workflows/container.yml
-grep -Fq "'release/**'" .github/workflows/container.yml
+grep -Fq "startsWith(github.ref, 'refs/tags/v')" .github/workflows/container.yml
 
 ! grep -RIE '(discord(app)?[._ -]?token|TOKEN)[=:][[:space:]]*[A-Za-z0-9._-]{40,}' --exclude-dir=.git .
 docker compose config --quiet

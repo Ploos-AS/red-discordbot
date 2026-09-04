@@ -1,7 +1,10 @@
 # Contributing
 
-Build with `make build`, run static checks with `make check`, and run the full
-container suite with `make test`. Changes should preserve immutable installation,
-non-root runtime, Docker/Podman compatibility, and amd64/arm64 builds. Keep M0
-focused: do not bundle arbitrary third-party cogs, Dashboard, Lavalink, PyLav, or
-runtime update mechanisms. Update documentation and tests with behavior changes.
+This repository builds the container/distribution layer; it is not a fork of
+Red-DiscordBot. Run `make check`, `make build`, `make smoke`, and `make test`
+before opening a pull request.
+
+Preserve immutable installation, non-root runtime, Docker/Podman compatibility,
+and amd64/arm64 builds. Do not bundle arbitrary third-party cogs or silently add
+Dashboard, Lavalink, PyLav, runtime updates, or other future-milestone features.
+Update documentation and tests whenever behavior changes.

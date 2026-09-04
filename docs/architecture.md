@@ -5,6 +5,11 @@ build time. Runtime mutation is confined to `/data`; replacing an image therefor
 changes application code without replacing user state. The fixed `redbot` user is
 UID/GID 1000 and owns the image-created data directory.
 
+`/data/.config/Red-DiscordBot/config.json` is the instance registry; `/data/redbot`
+contains the JSON datastore, cog repositories, and cog data. `/run/secrets` may
+contain a mounted token, while logs and `/tmp/redbot.pid` are intentionally
+non-persistent.
+
 The entrypoint validates configuration, invokes the idempotent bootstrap helper,
 reads the token, and `exec`s Red beneath `tini`. Tini forwards signals and reaps
 children; Red remains the application process and receives SIGTERM for graceful
