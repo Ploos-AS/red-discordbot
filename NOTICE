@@ -1,0 +1,16 @@
+Red-DiscordBot container packaging
+
+Copyright (c) 2026 Ploos AS.
+
+This repository contains packaging and container integration maintained by Ploos AS.
+The packaging is licensed under the MIT License; see LICENSE.
+
+Upstream Red-DiscordBot is developed by Cog Creators and contributors:
+https://github.com/Cog-Creators/Red-DiscordBot
+
+This container currently installs Red-DiscordBot 3.5.24 from PyPI at image build time.
+Upstream Red-DiscordBot is distributed under GPL-3.0-only. Red also vendors some
+components under their respective licenses; consult the upstream distribution for
+complete notices.
+
+Ploos AS is not affiliated with or endorsed by Cog Creators or Discord Inc.
