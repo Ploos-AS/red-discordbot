@@ -5,9 +5,9 @@ A production-oriented, self-hosted OCI distribution of upstream
 at image build time and pinned, so one image digest always contains the same Red
 version. This project does not fork Red and does not update it during startup.
 
-This differs from runtime-update container designs such as PhasecoreX by choosing
-immutable application files and explicit image upgrades. Both are valid operating
-models; this one emphasizes reproducibility and rollback.
+The stable container release is **0.1.0**, packaging upstream Red-DiscordBot **3.5.24**. Container and upstream versions are intentionally independent.
+
+This image uses immutable application files and explicit image upgrades, emphasizing reproducibility and rollback.
 
 ## Quick start
 
@@ -19,11 +19,10 @@ docker run -d --name red-discordbot --restart unless-stopped \
   --security-opt no-new-privileges:true --cap-drop ALL \
   -v red-data:/data -v "$PWD/secrets/discord_token:/run/secrets/discord_token:ro" \
   -e TOKEN_FILE=/run/secrets/discord_token \
-  ghcr.io/ploos-as/red-discordbot:latest
+  ghcr.io/ploos-as/red-discordbot:0.1.0
 ```
 
-For Compose, copy `.env.example`, create `secrets/discord_token`, then run
-`docker compose up -d`. No ports are needed. `TOKEN_FILE` takes precedence over
+For Compose, create `secrets/discord_token`, then run `docker compose up -d`. No ports are needed. `TOKEN_FILE` takes precedence over
 `TOKEN` and its contents are never intentionally logged.
 
 ## Persistence and upgrades
@@ -36,8 +35,7 @@ by the image). Upgrade by pulling a newer container tag and recreating the
 container; back up `/data` first. Container versions and upstream Red versions
 are independent.
 
-Published release images target `linux/amd64` and `linux/arm64`. `edge` tracks
-main; `X.Y.Z`, `X.Y`, and `latest` are produced for `vX.Y.Z` releases.
+Stable release images target `linux/amd64` and `linux/arm64`. `edge` tracks `main`; `0.1.0`, `0.1`, and `latest` identify the stable v0.1.0 release. Release images include BuildKit SBOM and provenance attestations.
 
 ## Podman Quadlet
 
@@ -51,3 +49,7 @@ See [configuration](docs/configuration.md), [architecture](docs/architecture.md)
 and [migration guidance](docs/migration.md). The healthcheck is local liveness,
 not proof of Discord connectivity. No privileged mode, host networking, extra
 capabilities, or bundled third-party cogs are used.
+
+## Licensing
+
+Packaging in this repository is MIT licensed. Upstream Red-DiscordBot is GPL-3.0-only; see [NOTICE](NOTICE) for attribution. This project is not affiliated with Cog Creators or Discord Inc.
