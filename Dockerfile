@@ -10,13 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
     && rm -rf /var/lib/apt/lists/*
 
 FROM python:${PYTHON_VERSION}-slim-bookworm
+ARG CONTAINER_VERSION=0.1.0
 ARG REDBOT_VERSION=3.5.24
 LABEL org.opencontainers.image.title="Red-DiscordBot container" \
       org.opencontainers.image.description="Immutable, self-hosted Red-DiscordBot distribution" \
       org.opencontainers.image.source="https://github.com/Ploos-AS/red-discordbot" \
       org.opencontainers.image.documentation="https://github.com/Ploos-AS/red-discordbot#readme" \
+      org.opencontainers.image.vendor="Ploos AS" \
       org.opencontainers.image.licenses="MIT AND GPL-3.0-only" \
-      org.opencontainers.image.version="${REDBOT_VERSION}"
+      org.opencontainers.image.version="${CONTAINER_VERSION}" \
+      io.ploos.red-discordbot.upstream.version="${REDBOT_VERSION}" \
+      io.ploos.red-discordbot.upstream.source="https://github.com/Cog-Creators/Red-DiscordBot"
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg git openssh-client tini \
     && groupadd --gid 1000 redbot && useradd --uid 1000 --gid redbot --home-dir /data --no-create-home redbot \
     && install -d -o redbot -g redbot /data \
