@@ -10,6 +10,8 @@ EnvironmentFile=%h/.config/red-discordbot/red-discordbot.env
 Volume=%h/.local/share/red-discordbot:/data:Z
 Secret=red-discordbot-token,type=mount,target=/run/secrets/discord_token
 Environment=TOKEN_FILE=/run/secrets/discord_token
+ReadOnly=true
+Tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m
 DropCapability=all
 NoNewPrivileges=true
 
