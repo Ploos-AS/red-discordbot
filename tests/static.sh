@@ -29,9 +29,18 @@ grep -Fq 'org.opencontainers.image.version="${CONTAINER_VERSION}"' Dockerfile
 grep -Fq 'io.ploos.red-discordbot.upstream.version="${REDBOT_VERSION}"' Dockerfile
 grep -Fq 'build-args:' .github/workflows/container.yml
 grep -Fq 'REDBOT_VERSION=${{ steps.versions.outputs.redbot }}' .github/workflows/container.yml
+grep -Fq 'tests/hardening-qualification.sh' .github/workflows/container.yml
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" README.md
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" compose.yaml
+grep -Fq 'read_only: true' compose.yaml
+grep -Fq '/tmp:rw,noexec,nosuid,nodev,size=16m' compose.yaml
+grep -Fq 'no-new-privileges:true' compose.yaml
+grep -Fq -- '- ALL' compose.yaml
 grep -Fq "Image=ghcr.io/ploos-as/red-discordbot:${version}" podman/red-discordbot.container
+grep -Fq 'ReadOnly=true' podman/red-discordbot.container
+grep -Fq 'Tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m' podman/red-discordbot.container
+grep -Fq 'DropCapability=all' podman/red-discordbot.container
+grep -Fq 'NoNewPrivileges=true' podman/red-discordbot.container
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" "docs/releases/v${version}.md"
 grep -Fq 'GPL-3.0-only' NOTICE
 grep -Fq 'Cog-Creators/Red-DiscordBot' NOTICE
