@@ -15,7 +15,10 @@ cleanup() {
 trap cleanup EXIT
 
 printf '%s\n' "$secret" > "$tmp/token"
-chmod 0600 "$tmp/token"
+# The container runs as UID 1000 and must be able to read the bind-mounted
+# secret. The mount itself is read-only; world-readability here is confined to
+# the ephemeral CI runner and mirrors the existing container test fixture.
+chmod 0644 "$tmp/token"
 
 docker volume create "$volume" >/dev/null
 
