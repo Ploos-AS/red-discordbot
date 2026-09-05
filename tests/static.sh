@@ -7,7 +7,13 @@ printf '%s\n' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || {
     exit 1
 }
 
-for required in Dockerfile README.md LICENSE NOTICE VERSION compose.yaml podman/red-discordbot.container "docs/releases/v${version}.md"; do
+redbot_version=$(cat REDBOT_VERSION)
+printf '%s\n' "$redbot_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+    echo "REDBOT_VERSION must be strict X.Y.Z semver" >&2
+    exit 1
+}
+
+for required in Dockerfile README.md LICENSE NOTICE VERSION REDBOT_VERSION compose.yaml podman/red-discordbot.container "docs/releases/v${version}.md"; do
     [ -s "$required" ] || { echo "missing required file: $required" >&2; exit 1; }
 done
 
@@ -15,12 +21,14 @@ for file in rootfs/usr/local/bin/* scripts/*.sh tests/*.sh; do
     if head -n 1 "$file" | grep -q bash; then bash -n "$file"; else sh -n "$file"; fi
 done
 
-grep -Eq '^ARG REDBOT_VERSION=[0-9]+\.[0-9]+\.[0-9]+$' Dockerfile
+grep -Eq '^ARG REDBOT_VERSION$' Dockerfile
 grep -Fq 'ARG CONTAINER_VERSION=0.1.0' Dockerfile
 grep -q '^USER 1000:1000$' Dockerfile
 grep -Fq 'VOLUME ["/data"]' Dockerfile
 grep -Fq 'org.opencontainers.image.version="${CONTAINER_VERSION}"' Dockerfile
 grep -Fq 'io.ploos.red-discordbot.upstream.version="${REDBOT_VERSION}"' Dockerfile
+grep -Fq 'build-args:' .github/workflows/container.yml
+grep -Fq 'REDBOT_VERSION=${{ steps.versions.outputs.redbot }}' .github/workflows/container.yml
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" README.md
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" compose.yaml
 grep -Fq "Image=ghcr.io/ploos-as/red-discordbot:${version}" podman/red-discordbot.container
