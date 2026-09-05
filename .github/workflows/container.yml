@@ -50,6 +50,7 @@ jobs:
           IMAGE=red-discordbot:test tests/entrypoint-args.sh
           IMAGE=red-discordbot:test bash tests/runtime-qualification.sh
           IMAGE=red-discordbot:test FROM_IMAGE=ghcr.io/ploos-as/red-discordbot:0.1.0 bash tests/upgrade-qualification.sh
+          IMAGE=red-discordbot:test bash tests/hardening-qualification.sh
 
   publish-edge-or-tag:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
