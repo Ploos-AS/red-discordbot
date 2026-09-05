@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1.7
 ARG PYTHON_VERSION=3.11
 FROM python:${PYTHON_VERSION}-slim-bookworm AS builder
-ARG REDBOT_VERSION=3.5.24
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential git libffi-dev libsodium-dev \
+ARG REDBOT_VERSION
+RUN test -n "${REDBOT_VERSION}" \
+    && apt-get update && apt-get install -y --no-install-recommends build-essential git libffi-dev libsodium-dev \
     && python -m venv /opt/redbot/venv \
     && /opt/redbot/venv/bin/pip install --no-cache-dir --upgrade pip wheel \
     && /opt/redbot/venv/bin/pip install --no-cache-dir "Red-DiscordBot==${REDBOT_VERSION}" \
@@ -11,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 
 FROM python:${PYTHON_VERSION}-slim-bookworm
 ARG CONTAINER_VERSION=0.1.0
-ARG REDBOT_VERSION=3.5.24
+ARG REDBOT_VERSION
 LABEL org.opencontainers.image.title="Red-DiscordBot container" \
       org.opencontainers.image.description="Immutable, self-hosted Red-DiscordBot distribution" \
       org.opencontainers.image.source="https://github.com/Ploos-AS/red-discordbot" \
@@ -21,7 +22,8 @@ LABEL org.opencontainers.image.title="Red-DiscordBot container" \
       org.opencontainers.image.version="${CONTAINER_VERSION}" \
       io.ploos.red-discordbot.upstream.version="${REDBOT_VERSION}" \
       io.ploos.red-discordbot.upstream.source="https://github.com/Cog-Creators/Red-DiscordBot"
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg git openssh-client tini \
+RUN test -n "${REDBOT_VERSION}" \
+    && apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg git openssh-client tini \
     && groupadd --gid 1000 redbot && useradd --uid 1000 --gid redbot --home-dir /data --no-create-home redbot \
     && install -d -o redbot -g redbot /data \
     && rm -rf /var/lib/apt/lists/*
