@@ -11,6 +11,9 @@ services:
       - discord_token
     volumes:
       - red-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
     healthcheck:
       test: ["CMD", "healthcheck"]
       interval: 30s
