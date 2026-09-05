@@ -15,9 +15,6 @@ cleanup() {
 trap cleanup EXIT
 
 printf '%s\n' "$secret" > "$tmp/token"
-# The container runs as UID 1000 and must be able to read the bind-mounted
-# secret. The mount itself is read-only; world-readability here is confined to
-# the ephemeral CI runner and mirrors the existing container test fixture.
 chmod 0644 "$tmp/token"
 
 docker volume create "$volume" >/dev/null
@@ -52,13 +49,11 @@ docker run --name "$name" \
 docker rm "$name" >/dev/null
 unset status
 
-# Exercise lifecycle semantics without contacting Discord. The helper process is
-# deliberately named redbot so the image healthcheck observes the same PID/liveness
-# contract used by the real entrypoint.
+# Exercise the real init/entrypoint signal chain without contacting Discord.
+# Supplying a command makes entrypoint exec the helper while retaining tini as PID 1.
 docker run -d --name "$name" \
   -v "$volume:/data" \
-  --entrypoint bash \
-  "$image" -c \
+  "$image" bash -c \
   'printf "%s\n" first-boot > /data/m021-marker; echo $$ > /tmp/redbot.pid; exec -a redbot bash -c '\''trap "exit 0" TERM; while :; do sleep 1 & wait $!; done'\''' \
   >/dev/null
 
