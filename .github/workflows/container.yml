@@ -43,6 +43,7 @@ jobs:
           IMAGE=red-discordbot:test scripts/smoke-test.sh
           IMAGE=red-discordbot:test scripts/test-container.sh
           IMAGE=red-discordbot:test tests/entrypoint-args.sh
+          IMAGE=red-discordbot:test tests/runtime-qualification.sh
 
   publish-edge-or-tag:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
