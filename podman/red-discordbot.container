@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Container]
-Image=ghcr.io/ploos-as/red-discordbot:0.1.0
+Image=ghcr.io/ploos-as/red-discordbot:0.2.0
 ContainerName=red-discordbot
 EnvironmentFile=%h/.config/red-discordbot/red-discordbot.env
 Volume=%h/.local/share/red-discordbot:/data:Z
