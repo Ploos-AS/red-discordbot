@@ -13,7 +13,7 @@ printf '%s\n' "$redbot_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || {
     exit 1
 }
 
-for required in Dockerfile README.md LICENSE NOTICE VERSION REDBOT_VERSION compose.yaml podman/red-discordbot.container "docs/releases/v${version}.md"; do
+for required in Dockerfile README.md LICENSE NOTICE VERSION REDBOT_VERSION CHANGELOG.md compose.yaml podman/red-discordbot.container "docs/releases/v${version}.md" docs/M0_2_5_RELEASE_QUALIFICATION.md tests/release-qualification.sh; do
     [ -s "$required" ] || { echo "missing required file: $required" >&2; exit 1; }
 done
 
@@ -22,7 +22,7 @@ for file in rootfs/usr/local/bin/* scripts/*.sh tests/*.sh; do
 done
 
 grep -Eq '^ARG REDBOT_VERSION$' Dockerfile
-grep -Fq 'ARG CONTAINER_VERSION=0.1.0' Dockerfile
+grep -Fq "ARG CONTAINER_VERSION=${version}" Dockerfile
 grep -q '^USER 1000:1000$' Dockerfile
 grep -Fq 'VOLUME ["/data"]' Dockerfile
 grep -Fq 'org.opencontainers.image.version="${CONTAINER_VERSION}"' Dockerfile
@@ -30,6 +30,7 @@ grep -Fq 'io.ploos.red-discordbot.upstream.version="${REDBOT_VERSION}"' Dockerfi
 grep -Fq 'build-args:' .github/workflows/container.yml
 grep -Fq 'REDBOT_VERSION=${{ steps.versions.outputs.redbot }}' .github/workflows/container.yml
 grep -Fq 'tests/hardening-qualification.sh' .github/workflows/container.yml
+grep -Fq 'tests/release-qualification.sh' .github/workflows/container.yml
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" README.md
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" compose.yaml
 grep -Fq 'read_only: true' compose.yaml
@@ -42,6 +43,7 @@ grep -Fq 'Tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m' podman/red-discordbot.cont
 grep -Fq 'DropCapability=all' podman/red-discordbot.container
 grep -Fq 'NoNewPrivileges=true' podman/red-discordbot.container
 grep -Fq "ghcr.io/ploos-as/red-discordbot:${version}" "docs/releases/v${version}.md"
+grep -Fq "## [${version}]" CHANGELOG.md
 grep -Fq 'GPL-3.0-only' NOTICE
 grep -Fq 'Cog-Creators/Red-DiscordBot' NOTICE
 grep -Fq 'linux/amd64,linux/arm64' .github/workflows/container.yml
