@@ -11,7 +11,7 @@ RUN test -n "${REDBOT_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 
 FROM python:${PYTHON_VERSION}-slim-bookworm
-ARG CONTAINER_VERSION=0.1.0
+ARG CONTAINER_VERSION=0.2.0
 ARG REDBOT_VERSION
 LABEL org.opencontainers.image.title="Red-DiscordBot container" \
       org.opencontainers.image.description="Immutable, self-hosted Red-DiscordBot distribution" \
